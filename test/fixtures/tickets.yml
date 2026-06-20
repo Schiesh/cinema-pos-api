@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  screening_id: 1
+  seat_number: MyString
+  status: MyString
+  price: 9.99
+  customer_name: MyString
+  customer_email: MyString
+
+two:
+  screening_id: 1
+  seat_number: MyString
+  status: MyString
+  price: 9.99
+  customer_name: MyString
+  customer_email: MyString

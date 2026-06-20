@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seat_map_row_id: 1
+  label: MyString
+  seat_type: MyString
+  position: 1
+  active: false
+
+two:
+  seat_map_row_id: 1
+  label: MyString
+  seat_type: MyString
+  position: 1
+  active: false
