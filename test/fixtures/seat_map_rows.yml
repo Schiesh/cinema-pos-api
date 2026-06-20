@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  seat_map_id: 1
+  row_letter: MyString
+  seats_per_row: 1
+  has_aisle: false
+  aisle_after_seat: 1
+
+two:
+  seat_map_id: 1
+  row_letter: MyString
+  seats_per_row: 1
+  has_aisle: false
+  aisle_after_seat: 1
