@@ -13,6 +13,10 @@ class Movie < ApplicationRecord
         "(screenings.showtime AT TIME ZONE 'UTC' AT TIME ZONE states.time_zone)::date = 
         (NOW() AT TIME ZONE states.time_zone)::date"
       )
+      .where(
+        "screenings.showtime + (? * INTERVAL '1 minute') >= NOW()",
+        SiteSetting.current.booking_cutoff_minutes
+      )
       .distinct
   }
 

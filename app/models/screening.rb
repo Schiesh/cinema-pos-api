@@ -9,6 +9,18 @@ class Screening < ApplicationRecord
 
   after_create :generate_tickets_from_seat_map
 
+  def booking_cutoff_at
+    showtime + SiteSetting.current.booking_cutoff_minutes.minutes
+  end
+
+  def past_cutoff?
+    Time.current > booking_cutoff_at
+  end
+
+  def bookable?
+    !past_cutoff?
+  end
+
   private
 
   def generate_tickets_from_seat_map

@@ -4,9 +4,15 @@ class ScreeningsController < ApplicationController
 
   # GET /movies/:movie_id/screenings
   def index
-    @screenings = @movie.screenings.includes(:screen)
+    @screenings = @movie.screenings
+      .joins(screen: { location: :state })
+      .where(
+        "(screenings.showtime AT TIME ZONE 'UTC' AT TIME ZONE states.time_zone)::date >= 
+        (NOW() AT TIME ZONE states.time_zone)::date"
+      )
+      .order(:showtime)
     render json: @screenings.map { |s| screening_json(s) }
-  end
+  end 
 
   # GET /screenings/:id
   def show
@@ -72,6 +78,7 @@ class ScreeningsController < ApplicationController
       seats_total: screening.seats_total,
       price: screening.price,
       screen_number: screening.screen_number,
+      bookable: screening.bookable?,
       percent_full: screening.seats_total > 0 ? 
         ((screening.seats_total - screening.seats_available).to_f / screening.seats_total * 100).round : 0
     }
