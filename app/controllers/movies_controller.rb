@@ -7,6 +7,16 @@ class MoviesController < ApplicationController
     render json: @movies
   end
 
+  # GET /movies/now_showing
+  def now_showing
+    render json: Movie.now_showing
+  end
+
+  # GET /movies/coming_soon
+  def coming_soon
+    render json: Movie.coming_soon
+  end
+
   # GET /movies/:id
   def show
     render json: @movie
@@ -44,10 +54,6 @@ class MoviesController < ApplicationController
   end
 
   def movie_params
-    params.require(:movie).permit(:title, :genre, :duration, :rating, :price)
-  end
-
-  def movie_params
-    params.require(:movie).permit(:title, :genre, :duration, :rating, :price, :poster_url)
+    params.require(:movie).permit(:title, :genre, :duration, :rating, :price, :poster_url, :coming_soon_toggle)
   end
 end

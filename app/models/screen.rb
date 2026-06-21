@@ -1,4 +1,5 @@
 class Screen < ApplicationRecord
+  belongs_to :location
   has_one :seat_map, dependent: :destroy
   has_many :screenings, dependent: :nullify
 

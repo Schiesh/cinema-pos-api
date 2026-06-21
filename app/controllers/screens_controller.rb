@@ -3,8 +3,8 @@ class ScreensController < ApplicationController
 
   # GET /screens
   def index
-    @screens = Screen.active.order(:name)
-    render json: @screens
+    @screens = Screen.active.includes(location: :state).order(:name)
+    render json: @screens.map { |s| screen_json(s) }
   end
 
   # GET /screens/:id
@@ -46,4 +46,17 @@ class ScreensController < ApplicationController
   def screen_params
     params.require(:screen).permit(:name, :screen_type, :capacity, :description, :active)
   end
+
+  def screen_json(screen)
+    {
+      id: screen.id,
+      name: screen.name,
+      screen_type: screen.screen_type,
+      capacity: screen.capacity,
+      description: screen.description,
+      active: screen.active,
+      time_zone: screen.location.state.time_zone
+    }
+  end
+
 end
