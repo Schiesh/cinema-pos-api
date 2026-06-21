@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   resources :seats, only: [:update]
 
   resources :movies do
+    collection do
+      get :now_showing
+      get :coming_soon
+    end
     resources :screenings, shallow: true do
       resources :tickets, shallow: true do
         member do

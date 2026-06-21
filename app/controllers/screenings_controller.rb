@@ -15,7 +15,12 @@ class ScreeningsController < ApplicationController
 
   # POST /movies/:movie_id/screenings
   def create
-    @screening = @movie.screenings.build(screening_params)
+    zone = ActiveSupport::TimeZone[params[:screening][:time_zone]] || Time.zone
+    local_time = zone.parse(params[:screening][:showtime])
+
+    @screening = @movie.screenings.build(screening_params.except(:time_zone))
+    @screening.showtime = local_time
+
     if @screening.save
       render json: screening_json(@screening), status: :created
     else
@@ -51,7 +56,7 @@ class ScreeningsController < ApplicationController
   def screening_params
     params.require(:screening).permit(
       :showtime, :seats_available, :seats_total,
-      :screen_number, :screen_id, :price
+      :screen_number, :screen_id, :price, :time_zone
     )
   end
 

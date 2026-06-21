@@ -10,11 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_20_014431) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_21_013807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "locations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "state_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["state_id"], name: "index_locations_on_state_id"
+  end
+
   create_table "movies", force: :cascade do |t|
+    t.boolean "coming_soon_toggle", default: false, null: false
     t.datetime "created_at", null: false
     t.integer "duration"
     t.string "genre"
@@ -43,9 +52,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_20_014431) do
     t.integer "capacity", null: false
     t.datetime "created_at", null: false
     t.string "description"
+    t.bigint "location_id", null: false
     t.string "name", null: false
     t.string "screen_type", default: "Standard", null: false
     t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_screens_on_location_id"
   end
 
   create_table "seat_map_rows", force: :cascade do |t|
@@ -78,6 +89,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_20_014431) do
     t.index ["seat_map_row_id"], name: "index_seats_on_seat_map_row_id"
   end
 
+  create_table "site_settings", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "time_zone", default: "Central Time (US & Canada)", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "states", force: :cascade do |t|
+    t.string "abbreviation", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "time_zone", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abbreviation"], name: "index_states_on_abbreviation", unique: true
+  end
+
   create_table "themes", force: :cascade do |t|
     t.string "background_color"
     t.datetime "created_at", null: false
@@ -102,7 +128,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_20_014431) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "locations", "states"
   add_foreign_key "screenings", "screens"
+  add_foreign_key "screens", "locations"
   add_foreign_key "seat_map_rows", "seat_maps"
   add_foreign_key "seat_maps", "screens"
   add_foreign_key "seats", "seat_map_rows"
