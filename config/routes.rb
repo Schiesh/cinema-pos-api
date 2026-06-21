@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
+  get "site_settings/show"
+  get "site_settings/update"
   get "themes/show"
   get "themes/update"
   resource :theme, only: [:show, :update]
+  resource :site_settings, only: [:show, :update]
   resources :screens do
     resource :seat_map, only: [:show, :create, :update] do
       resources :seat_map_rows, only: [:create] do
