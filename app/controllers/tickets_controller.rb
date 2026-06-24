@@ -1,4 +1,5 @@
 class TicketsController < ApplicationController
+  skip_before_action :authenticate_request, only: [:index, :show, :book]
   before_action :set_screening, only: [:index, :create]
   before_action :set_ticket, only: [:show, :update, :destroy, :book]
 

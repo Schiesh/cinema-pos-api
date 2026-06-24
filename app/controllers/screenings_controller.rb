@@ -1,4 +1,5 @@
 class ScreeningsController < ApplicationController
+  skip_before_action :authenticate_request, only: [:index, :show]
   before_action :set_movie, only: [:index, :create]
   before_action :set_screening, only: [:show, :update, :destroy]
 

@@ -1,4 +1,5 @@
 class ScreensController < ApplicationController
+  skip_before_action :authenticate_request, only: [:index, :show]
   before_action :set_screen, only: [:show, :update, :destroy]
 
   # GET /screens

@@ -1,4 +1,6 @@
 class SiteSettingsController < ApplicationController
+  skip_before_action :authenticate_request, only: [:show]
+  
   # GET /site_settings
   def show
     render json: SiteSetting.current
