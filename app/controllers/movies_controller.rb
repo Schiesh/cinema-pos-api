@@ -1,4 +1,6 @@
 class MoviesController < ApplicationController
+  skip_before_action :authenticate_request, only: [:index, :show, :now_showing, :coming_soon]
+  before_action :require_operator, only: [:create, :update, :destroy]
   before_action :set_movie, only: [:show, :update, :destroy]
 
   # GET /movies

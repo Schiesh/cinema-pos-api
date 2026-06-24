@@ -1,8 +1,16 @@
 Rails.application.routes.draw do
+  get "auth/login"
+  get "auth/pin_login"
   get "site_settings/show"
   get "site_settings/update"
   get "themes/show"
   get "themes/update"
+  
+  namespace :auth do
+    post :login
+    post :pin_login
+  end
+
   resource :theme, only: [:show, :update]
   resource :site_settings, only: [:show, :update]
   resources :screens do

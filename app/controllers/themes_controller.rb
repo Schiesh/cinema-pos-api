@@ -1,4 +1,6 @@
 class ThemesController < ApplicationController
+  skip_before_action :authenticate_request, only: [:show]
+  
   # GET /theme
   def show
     render json: Theme.current

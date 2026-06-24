@@ -1,4 +1,5 @@
 class SeatMapsController < ApplicationController
+  skip_before_action :authenticate_request, only: [:show]
   before_action :set_screen
 
   # GET /screens/:screen_id/seat_map
