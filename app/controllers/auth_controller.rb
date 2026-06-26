@@ -1,45 +1,80 @@
 class AuthController < ApplicationController
-  skip_before_action :authenticate_request, only: [:login, :pin_login]
+  skip_before_action :authenticate_request, only: [:login, :pin_login, :register]
 
-  # POST /auth/login (operator panel - username + password)
+  # POST /auth/login (operator panel - email + password)
   def login
-    user = User.find_by(username: params[:username])
+    user = User.find_by(email: params[:email]&.downcase)
 
     if user&.authenticate(params[:password]) && user.active? && user.operator?
       token = JsonWebToken.encode({
         user_id: user.id,
         role: user.role,
-        username: user.username
+        email: user.email,
+        full_name: user.full_name
       })
       render json: {
         token: token,
         role: user.role,
-        username: user.username
+        email: user.email,
+        full_name: user.full_name
       }
     else
-      render json: { error: "Invalid username or password" }, status: :unauthorized
+      render json: { error: "Invalid email or password" }, status: :unauthorized
     end
   end
 
-  # POST /auth/pin_login (register - employee ID + PIN, any role)
+  # POST /auth/pin_login (register - employee_id + PIN)
   def pin_login
     user = User.find_by(employee_id: params[:employee_id])
 
-    if user&.authenticate_pin(params[:pin]) && user.active?
+    if user&.authenticate_pin(params[:pin]) && user.active? && user.employee?
       token = JsonWebToken.encode({
         user_id: user.id,
         role: user.role,
         employee_id: user.employee_id,
-        username: user.username
+        full_name: user.full_name
       })
       render json: {
         token: token,
         role: user.role,
         employee_id: user.employee_id,
-        username: user.username
+        full_name: user.full_name
       }
     else
       render json: { error: "Invalid employee ID or PIN" }, status: :unauthorized
     end
+  end
+
+  # POST /auth/register (customer self-registration on booking site)
+  def register
+    user = User.new(register_params)
+    user.role = 'customer'
+    user.active = true
+
+    if user.save
+      token = JsonWebToken.encode({
+        user_id: user.id,
+        role: user.role,
+        email: user.email,
+        full_name: user.full_name
+      })
+      render json: {
+        token: token,
+        role: user.role,
+        email: user.email,
+        full_name: user.full_name
+      }, status: :created
+    else
+      render json: user.errors, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def register_params
+    params.require(:user).permit(
+      :first_name, :last_name, :email, :phone,
+      :password, :password_confirmation
+    )
   end
 end

@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get "users/index"
+  get "users/show"
+  get "users/create"
+  get "users/update"
+  get "users/destroy"
   get "auth/login"
   get "auth/pin_login"
   get "site_settings/show"
@@ -6,9 +11,12 @@ Rails.application.routes.draw do
   get "themes/show"
   get "themes/update"
   
+  resources :users
+
   namespace :auth do
     post :login
     post :pin_login
+    post :register
   end
 
   resource :theme, only: [:show, :update]
