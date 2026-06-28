@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     post :login
     post :pin_login
     post :register
+    post :customer_login
+    get :me
   end
 
   resource :theme, only: [:show, :update]
