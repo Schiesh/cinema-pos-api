@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  skip_before_action :authenticate_request, only: [:login, :pin_login, :register]
+  skip_before_action :authenticate_request, only: [:login, :pin_login, :register, :customer_login]
 
   # POST /auth/login (operator panel - email + password)
   def login
@@ -67,6 +67,39 @@ class AuthController < ApplicationController
     else
       render json: user.errors, status: :unprocessable_entity
     end
+  end
+
+  # POST /auth/customer_login
+  def customer_login
+    user = User.find_by(email: params[:email]&.downcase)
+
+    if user&.authenticate(params[:password]) && user.active? && user.customer?
+      token = JsonWebToken.encode({
+        user_id: user.id,
+        role: user.role,
+        email: user.email,
+        full_name: user.full_name
+      })
+      render json: {
+        token: token,
+        role: user.role,
+        email: user.email,
+        full_name: user.full_name
+      }
+    else
+      render json: { error: "Invalid email or password" }, status: :unauthorized
+    end
+  end
+
+  # GET /auth/me
+  def me
+    user = User.find(@current_user_payload[:user_id])
+    render json: {
+      id: user.id,
+      full_name: user.full_name,
+      email: user.email,
+      role: user.role
+    }
   end
 
   private
