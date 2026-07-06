@@ -7,12 +7,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
-# Clear existing screens
-Screen.destroy_all
-
 # Create default state and location
-indiana = State.find_or_create_by!(abbreviation: "IN") do |state|
-  state.name = "Indiana"
+texas = State.find_or_create_by!(abbreviation: "TX") do |state|
+  state.name = "Texas"
   state.time_zone = "America/Chicago"
 end
 
@@ -21,7 +18,7 @@ main_location = Location.find_or_create_by!(name: "Indy Cinema 8") do |location|
 end
 
 # Create 4 screens
-Screen.create!([
+screens_data = [
   {
     name: "Screen 1",
     screen_type: "Standard",
@@ -46,6 +43,18 @@ Screen.create!([
     capacity: 60,
     description: "Boutique screen, ideal for independent films", location: main_location
   }
-])
+]
 
-puts "Created #{Screen.count} screens"
+screens_data.each do |screen_data|
+  Screen.find_or_create_by!(name: screen_data[:name]) do |screen|
+    screen.screen_type = screen_data[:screen_type]
+    screen.capacity = screen_data[:capacity]
+    screen.description = screen_data[:description]
+    screen.location = main_location
+    screen.active = true
+  end
+end
+
+puts "States: #{State.count}"
+puts "Locations: #{Location.count}"
+puts "Screens: #{Screen.count}"
