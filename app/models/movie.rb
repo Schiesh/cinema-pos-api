@@ -7,7 +7,7 @@ class Movie < ApplicationRecord
   validates :title, presence: true
   validates :price, presence: true, numericality: { greater_than: 0 }
   validates :color, presence: true,
-    formate: { with: /\A#([A-Fa-f0-9]6}|[A-Fa-f0-9]{3})\z/,
+    format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/,
       message: "must be a valid hex color like #e50914" }
   
   scope :now_showing, -> {
