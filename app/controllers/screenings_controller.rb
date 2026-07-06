@@ -7,6 +7,7 @@ class ScreeningsController < ApplicationController
   def index
     @screenings = @movie.screenings
       .joins(screen: { location: :state })
+      .where(screenings: { status: 'published'})
       .where(
         "(screenings.showtime AT TIME ZONE 'UTC' AT TIME ZONE states.time_zone)::date >= 
         (NOW() AT TIME ZONE states.time_zone)::date"
@@ -63,7 +64,8 @@ class ScreeningsController < ApplicationController
   def screening_params
     params.require(:screening).permit(
       :showtime, :seats_available, :seats_total,
-      :screen_number, :screen_id, :price, :time_zone
+      :screen_number, :screen_id, :price, :time_zone,
+      :status, :play_week_id
     )
   end
 
@@ -80,6 +82,8 @@ class ScreeningsController < ApplicationController
       price: screening.price,
       screen_number: screening.screen_number,
       bookable: screening.bookable?,
+      status: screening.status,
+      play_week_id: screening.play_week_id,
       percent_full: screening.seats_total > 0 ? 
         ((screening.seats_total - screening.seats_available).to_f / screening.seats_total * 100).round : 0
     }
