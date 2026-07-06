@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  get "play_weeks/index"
+  get "play_weeks/show"
+  get "play_weeks/create"
+  get "play_weeks/update"
+  get "play_weeks/destroy"
   get "users/index"
   get "users/show"
   get "users/create"
@@ -33,6 +38,15 @@ Rails.application.routes.draw do
 
   resources :seat_map_rows, only: [:update, :destroy]
   resources :seats, only: [:update]
+
+  resources :play_weeks do 
+    member do
+      patch :publish_day
+    end
+    collection do
+      patch :publish_batch
+    end
+  end
 
   resources :movies do
     collection do
