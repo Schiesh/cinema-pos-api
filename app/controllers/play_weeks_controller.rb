@@ -97,7 +97,7 @@ class PlayWeeksController < ApplicationController
     }
 
     if include_screenings
-      date[:screenings] = play_week.screenings
+      data[:screenings] = play_week.screenings
         .includes(:movie, screen: :location)
         .order(:showtime)
         .map { |s| screening_summary(s) }
