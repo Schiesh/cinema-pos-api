@@ -3,9 +3,15 @@ class Screening < ApplicationRecord
   belongs_to :screen, optional: true
   has_many :tickets, dependent: :destroy
 
+  STATUSES = %w[planned published].freeze
+
+  validates :status, inclusion: { in: STATUSES}
   validates :showtime, presence: true
   validates :seats_total, presence: true, numericality: { greater_than: 0 }
   validates :screen_number, presence: true
+
+  scope :published, -> { where(status: 'published') }
+  scope :planned, -> { where(status: 'planned') }
 
   after_create :generate_tickets_from_seat_map
 

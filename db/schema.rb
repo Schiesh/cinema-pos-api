@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_26_155850) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_151919) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_155850) do
   end
 
   create_table "movies", force: :cascade do |t|
+    t.string "color", default: "#888888", null: false
     t.boolean "coming_soon_toggle", default: false, null: false
     t.datetime "created_at", null: false
     t.integer "duration"
@@ -34,17 +35,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_26_155850) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "play_weeks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "end_date", null: false
+    t.string "notes"
+    t.date "start_date", null: false
+    t.datetime "updated_at", null: false
+    t.index ["start_date"], name: "index_play_weeks_on_start_date", unique: true
+  end
+
   create_table "screenings", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "movie_id"
+    t.integer "play_week_id"
     t.decimal "price"
     t.bigint "screen_id"
     t.integer "screen_number"
     t.integer "seats_available"
     t.integer "seats_total"
     t.datetime "showtime"
+    t.string "status", default: "published", null: false
     t.datetime "updated_at", null: false
+    t.index ["play_week_id"], name: "index_screenings_on_play_week_id"
     t.index ["screen_id"], name: "index_screenings_on_screen_id"
+    t.index ["status"], name: "index_screenings_on_status"
   end
 
   create_table "screens", force: :cascade do |t|

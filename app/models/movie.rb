@@ -6,9 +6,13 @@ class Movie < ApplicationRecord
 
   validates :title, presence: true
   validates :price, presence: true, numericality: { greater_than: 0 }
-
+  validates :color, presence: true,
+    format: { with: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/,
+      message: "must be a valid hex color like #e50914" }
+  
   scope :now_showing, -> {
     joins(screenings: { screen: { location: :state } })
+      .where(screenings: {status: 'published' })
       .where(
         "(screenings.showtime AT TIME ZONE 'UTC' AT TIME ZONE states.time_zone)::date = 
         (NOW() AT TIME ZONE states.time_zone)::date"
@@ -24,6 +28,7 @@ class Movie < ApplicationRecord
     now_showing_ids = now_showing.pluck(:id)
 
     has_future_screening = joins(screenings: { screen: { location: :state } })
+      .where(screenings: { status: 'published' })
       .where(
         "(screenings.showtime AT TIME ZONE 'UTC' AT TIME ZONE states.time_zone)::date > 
         (NOW() AT TIME ZONE states.time_zone)::date"
