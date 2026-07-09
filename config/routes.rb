@@ -45,6 +45,7 @@ Rails.application.routes.draw do
     end
     collection do
       patch :publish_batch
+      patch :unpublish_batch
     end
   end
 

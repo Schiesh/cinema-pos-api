@@ -74,6 +74,23 @@ class PlayWeeksController < ApplicationController
     render json: { published: count, message: "#{count} showing#{'s' if count != 1} published successfully" }
   end
 
+  
+  # PATCH /play_weeks/unpublish_batch
+  def unpublish_batch
+    ids = params[:screening_ids]
+    unless ids.present?
+      render json: { error: "screening_ids parameter required" }, status: :unprocessable_entity
+      return
+    end
+
+    screenings = Screening.where(id: ids, status: 'published')
+    count = screenings.count
+    screenings.update_all(status: 'planned')
+
+    render json: { unpublished: count, message: "#{count} showing#{'s' if count != 1} moved back to planned" }
+  end
+
+# ------------------- Private! --------------------------
   private
 
   def set_play_week
